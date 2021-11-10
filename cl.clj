@@ -51,11 +51,13 @@
 
 ;; 7. Eliminate consecutive duplicates of a list.
 (defn compress [xs]
-  (reduce #
-  (if (= (last %1) %2) %1
-  (concat %1
-  (list %2))) '() xs))
-
+  (loop [current '()
+         remaining xs]
+    (if (nil? (first remaining))
+      (reverse current)
+      (recur
+        (if (= (first current) (first remaining)) current (cons (first remaining) current))
+        (rest remaining)))))
 (assert (= '(:a :b :c)
            (compress '(:a :a :b :b :c :c))))
 
@@ -75,7 +77,11 @@
 
 ;; 10. Create a list containing all integers within a given range.
 (defn my-range [a b]
-  nil)
+  (loop [output (list a)
+         curr (inc a)]
+    (if (> curr b)
+      (my-reverse output)
+      (recur (cons curr output) (inc curr)))))
 
 (assert (= '(3 4 5 6 7)
            (my-range 3 7)))
